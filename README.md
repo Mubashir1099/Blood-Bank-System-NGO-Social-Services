@@ -1,4 +1,4 @@
-# 🩸 Blood Bank Management System
+# 🩸 Blood Bank System (NGO & Social Services)
 
 > *"Saving Lives, One Drop at a Time"*
 
@@ -26,7 +26,7 @@ A complete, full‑stack **desktop application** for managing the end‑to‑end
 
 ## 📋 Overview
 
-The **Blood Bank Management System** digitizes every core process of a blood bank:
+The **Blood Bank System (NGO & Social Services)** digitizes every core process of a blood bank:
 
 - Registering **donors** and **recipients**
 - Recording **donations** and automatically updating **inventory**
