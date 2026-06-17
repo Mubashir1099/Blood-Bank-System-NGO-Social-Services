@@ -13,11 +13,14 @@ namespace App.WindowsApp.Forms
         private readonly DonorService donorService = new DonorService();
         private readonly RecipientService recipientService = new RecipientService();
         private readonly BloodRequestService requestService = new BloodRequestService();
+        private readonly CampService campService = new CampService();
+        private readonly VolunteerService volunteerService = new VolunteerService();
 
         private Panel pnlHeader, pnlSidebar, pnlContent, pnlFooter;
         private Button btnNavDashboard, btnNavDonors, btnNavDonation, btnNavInventory;
         private Button btnNavCharts;
         private Button btnNavRecipients, btnNavRequests, btnNavReports, btnNavChangePwd, btnNavLogout;
+        private Button btnNavCamps, btnNavVolunteers;
         private Button activeNavBtn;
         private Label lblUser, lblDateTime;
         private System.Windows.Forms.Timer clockTimer;
@@ -68,12 +71,14 @@ namespace App.WindowsApp.Forms
             btnNavInventory  = NavBtn("  Blood Inventory",  224);
             btnNavRecipients = NavBtn("  Recipients",       282);
             btnNavRequests   = NavBtn("  Blood Requests",   340);
-            btnNavReports    = NavBtn("  Reports",          398);
-            btnNavCharts     = NavBtn("  Charts",           456);
+            btnNavCamps      = NavBtn("  NGO Camps",        398);
+            btnNavVolunteers = NavBtn("  Volunteers",       456);
+            btnNavReports    = NavBtn("  Reports",          514);
+            btnNavCharts     = NavBtn("  Charts",           572);
 
-            var sep2 = new Panel { Location = new Point(10, 514), Size = new Size(195, 1), BackColor = Color.FromArgb(40, 45, 60) };
-            btnNavChangePwd = NavBtn("  Change Password",  524);
-            btnNavLogout    = NavBtn("  Logout",           582);
+            var sep2 = new Panel { Location = new Point(10, 630), Size = new Size(195, 1), BackColor = Color.FromArgb(40, 45, 60) };
+            btnNavChangePwd = NavBtn("  Change Password",  640);
+            btnNavLogout    = NavBtn("  Logout",           698);
             btnNavLogout.ForeColor = Color.FromArgb(255, 110, 110);
 
             btnNavDashboard.Click  += (s, e) => { SetNav(btnNavDashboard);  ShowDashboard(); };
@@ -82,12 +87,14 @@ namespace App.WindowsApp.Forms
             btnNavInventory.Click  += (s, e) => { SetNav(btnNavInventory);  ShowSection(new BloodInventoryControl()); };
             btnNavRecipients.Click += (s, e) => { SetNav(btnNavRecipients); ShowSection(new RecipientManagementControl()); };
             btnNavRequests.Click   += (s, e) => { SetNav(btnNavRequests);   ShowSection(new BloodRequestControl(currentUser)); };
+            btnNavCamps.Click      += (s, e) => { SetNav(btnNavCamps);      ShowSection(new CampManagementControl()); };
+            btnNavVolunteers.Click += (s, e) => { SetNav(btnNavVolunteers); ShowSection(new VolunteerManagementControl()); };
             btnNavReports.Click    += (s, e) => { SetNav(btnNavReports);    new ReportForm().ShowDialog(this); };
             btnNavCharts.Click     += (s, e) => { SetNav(btnNavCharts);     new ChartForm().ShowDialog(this); };
             btnNavChangePwd.Click  += (s, e) => { new ChangePasswordForm(currentUser).ShowDialog(this); };
             btnNavLogout.Click     += BtnLogout_Click;
 
-            pnlSidebar.Controls.AddRange(new Control[] { lblNav, sep1, btnNavDashboard, btnNavDonors, btnNavDonation, btnNavInventory, btnNavRecipients, btnNavRequests, btnNavReports, btnNavCharts, sep2, btnNavChangePwd, btnNavLogout });
+            pnlSidebar.Controls.AddRange(new Control[] { lblNav, sep1, btnNavDashboard, btnNavDonors, btnNavDonation, btnNavInventory, btnNavRecipients, btnNavRequests, btnNavCamps, btnNavVolunteers, btnNavReports, btnNavCharts, sep2, btnNavChangePwd, btnNavLogout });
         }
 
         private Button NavBtn(string text, int y)
@@ -156,15 +163,25 @@ namespace App.WindowsApp.Forms
                 int totalUnits = 0; foreach (var v in summary.Values) totalUnits += v;
                 int pending    = requestService.GetRequestsByStatus("Pending").Count;
                 int approved   = requestService.GetRequestsByStatus("Approved").Count;
+                
+                var camps      = campService.GetAllCamps();
+                int activeCamps = camps.FindAll(c => c.CampDate.Date >= DateTime.Today).Count;
+                var volunteers = volunteerService.GetAllVolunteers();
 
                 int xc = 0, yc = 76;
+                // Row 1 Cards
                 AddCard(scroll, "Total Donors",    donors.Count.ToString(),    Color.FromArgb(220,53,69),  xc,     yc, () => { SetNav(btnNavDonors);     ShowSection(new DonorManagementControl()); });
                 AddCard(scroll, "Recipients",      recipients.Count.ToString(), Color.FromArgb(13,110,253), xc+188, yc, () => { SetNav(btnNavRecipients); ShowSection(new RecipientManagementControl()); });
                 AddCard(scroll, "Blood Units",     totalUnits.ToString(),       Color.FromArgb(25,135,84),  xc+376, yc, () => { SetNav(btnNavInventory);  ShowSection(new BloodInventoryControl()); });
                 AddCard(scroll, "Pending Req.",    pending.ToString(),          Color.FromArgb(255,153,0),  xc+564, yc, () => { SetNav(btnNavRequests);   ShowSection(new BloodRequestControl(currentUser)); });
                 AddCard(scroll, "Approved Req.",   approved.ToString(),         Color.FromArgb(32,201,151), xc+752, yc, () => { SetNav(btnNavRequests);   ShowSection(new BloodRequestControl(currentUser)); });
 
-                int yBG = 218;
+                // Row 2 Cards (NGO & Services Stats)
+                int yc2 = yc + 128;
+                AddCard(scroll, "Active Camps",    activeCamps.ToString(),      Color.FromArgb(111,66,193), xc,     yc2, () => { SetNav(btnNavCamps);      ShowSection(new CampManagementControl()); });
+                AddCard(scroll, "Volunteers",      volunteers.Count.ToString(), Color.FromArgb(25,135,84),  xc+188, yc2, () => { SetNav(btnNavVolunteers); ShowSection(new VolunteerManagementControl()); });
+
+                int yBG = yc2 + 128;
                 scroll.Controls.Add(SectionLbl("Blood Inventory by Group", 0, yBG)); yBG += 38;
                 string[] bgs = {"A+","A-","B+","B-","O+","O-","AB+","AB-"};
                 int xBG = 0;

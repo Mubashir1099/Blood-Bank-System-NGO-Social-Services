@@ -108,3 +108,4 @@ C:\Users\Rising\source\repos\BloodBankSystem\FinalProject\App.WindowsApp\obj\Deb
 C:\Users\Rising\source\repos\BloodBankSystem\FinalProject\App.WindowsApp\obj\Debug\net10.0-windows\App.WindowsApp.pdb
 C:\Users\Rising\source\repos\BloodBankSystem\FinalProject\App.WindowsApp\obj\Debug\net10.0-windows\App.WindowsApp.genruntimeconfig.cache
 C:\Users\Rising\source\repos\BloodBankSystem\FinalProject\App.WindowsApp\obj\Debug\net10.0-windows\ref\App.WindowsApp.dll
+c:\Users\Rising\source\repos\BloodBankSystem\FinalProject\App.WindowsApp\obj\Debug\net10.0-windows\App.WindowsApp.sourcelink.json

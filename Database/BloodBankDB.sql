@@ -124,5 +124,46 @@ IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Donations'
     ALTER TABLE Donations ADD Hemoglobin NVARCHAR(20) NULL;
 GO
 
+-- NGO & Services Tables
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Camps]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE Camps (
+        CampID INT PRIMARY KEY IDENTITY(1,1),
+        CampName NVARCHAR(150) NOT NULL,
+        Location NVARCHAR(255) NOT NULL,
+        CampDate DATE NOT NULL,
+        TargetUnits INT NOT NULL DEFAULT 0,
+        OrganizerName NVARCHAR(100) NOT NULL,
+        IsActive BIT DEFAULT 1,
+        CreatedAt DATETIME DEFAULT GETDATE()
+    );
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Volunteers]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE Volunteers (
+        VolunteerID INT PRIMARY KEY IDENTITY(1,1),
+        FullName NVARCHAR(100) NOT NULL,
+        PhoneNumber NVARCHAR(15) NOT NULL,
+        Email NVARCHAR(100),
+        Address NVARCHAR(255),
+        Skills NVARCHAR(100),
+        IsActive BIT DEFAULT 1,
+        CreatedAt DATETIME DEFAULT GETDATE()
+    );
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CampVolunteers]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE CampVolunteers (
+        CampID INT FOREIGN KEY REFERENCES Camps(CampID),
+        VolunteerID INT FOREIGN KEY REFERENCES Volunteers(VolunteerID),
+        PRIMARY KEY (CampID, VolunteerID)
+    );
+END
+GO
+
 PRINT 'Database setup complete!';
 GO
