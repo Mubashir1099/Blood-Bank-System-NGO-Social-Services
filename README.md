@@ -1,4 +1,4 @@
-# 🩸 Blood Bank Management System
+# 🩸 Blood Bank System (NGO & Social Services)
 
 > *"Saving Lives, One Drop at a Time"*
 
